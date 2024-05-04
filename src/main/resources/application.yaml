@@ -1,0 +1,53 @@
+debug: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    com.jk.projectboard: debug
+    org.springframework.web.servlet: debug
+#    jpa의 쿼리로그를 디버그 로그로 관찰할 때 파라미터가 ?로 출력되는 것을 출력되도록 하는 설정
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/board
+    username: jk
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    # 테스트용 데이터베이스 생성
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    # jpa에 종속된 구현체의 설정
+    properties:
+      hibernate:
+        # sql 포멧팅
+        format_sql: true
+        # 복잡한 연관관계의 쿼리를 한번에 벌크로 셀렉트 해서 가져오는 설정 (100개로 묶어서 가져오는)
+        default_batch_fetch_size: 100
+  h2:
+    console:
+      enabled: false
+  sql:
+    init:
+      # data.sql 을 언제 작동할지 룰 설정
+      mode: always
+
+---
+spring:
+  config:
+    activate:
+      on-profile: testdb
+#  datasource:
+#    url: jdbc:h2:mem:board;mode=mysql
+#    driver-class-name: org.h2.Driver
+#  sql:
+#    init:
+#      mode: always
+#  test.database.replace: none
+
