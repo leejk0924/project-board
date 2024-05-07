@@ -37,7 +37,7 @@ public class Article {
 
     @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     @CreatedBy
     @Column(nullable = false, length = 100)
     private String createdBy;
