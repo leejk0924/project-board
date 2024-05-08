@@ -35,7 +35,7 @@ spring:
       enabled: false
   sql:
     init:
-      mode: never
+      mode: always
     # data.sql 을 언제 작동할지 룰 설정
 
 ---
