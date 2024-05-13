@@ -37,6 +37,10 @@ spring:
     init:
       mode: always
     # data.sql 을 언제 작동할지 룰 설정
+  data:
+    rest:
+      base-path: /api
+      detection-strategy: annotated
 
 ---
 spring:
