@@ -45,6 +45,9 @@ dependencies {
     // NoClassDefFoundError 발생에 대응하는 어노테이션
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"     // java.lang.NoClassDefFoundError (javax.annotation.Generated)
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"   // java.lang.NoClassDefFoundError (javax.annotation.Entity)
+
+    // thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 tasks.named('test') {
