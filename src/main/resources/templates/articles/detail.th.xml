@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<thlogic>
+    <attr sel="#header">
+        <th:repleace>header :: header</th:repleace>
+    </attr>
+    <attr sel="#footer">
+        <th:repleace>footer :: footer</th:repleace>
+    </attr>
+</thlogic>
