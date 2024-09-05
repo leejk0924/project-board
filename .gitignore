@@ -9,7 +9,7 @@
 /src/main/generated
 
 # JPA Buddy
-.jpd/
+.jpb/
 
 # User-specific stuff
 .idea/**/workspace.xml
