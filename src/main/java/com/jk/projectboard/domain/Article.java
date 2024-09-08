@@ -3,20 +3,14 @@ package com.jk.projectboard.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Table(indexes = {
         @Index(columnList = "title"),
         @Index(columnList = "hashtag"),
@@ -29,6 +23,9 @@ public class Article extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Setter
+    @ManyToOne(optional = false)
+    private UserAccount userAccount;
+    @Setter
     @Column(nullable = false)
     private String title;
     @Setter
@@ -38,7 +35,7 @@ public class Article extends AuditingFields {
     private String hashtag;
     // toString 순환참조 막기 위해 아래 어노테이션 사용
     @ToString.Exclude
-    @OrderBy("id")
+    @OrderBy("createdAt DESC")
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
@@ -46,13 +43,14 @@ public class Article extends AuditingFields {
     protected Article() {
     }
 
-    private Article(String title, String content, String hashtag) {
+    private Article(UserAccount userAccount, String title, String content, String hashtag) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
     }
-    public static Article of(String title, String content, String hashtag) {
-        return new Article(title, content, hashtag);
+    public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
+        return new Article(userAccount, title, content, hashtag);
     }
     // equals , hashCode 구현 (동일성, 동등성 검사를 위해)
     // DB에서 id가 동일하면 동등성, 동일성이 적합하다 (장점 : 성능을 높일 수 있음, 고로 롬복 사용 x)

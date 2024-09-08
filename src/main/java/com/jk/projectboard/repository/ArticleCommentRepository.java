@@ -10,11 +10,15 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
+
 @RepositoryRestResource
 public interface ArticleCommentRepository extends
         JpaRepository<ArticleComment, Long>,
         QuerydslPredicateExecutor<ArticleComment>,
         QuerydslBinderCustomizer<QArticleComment> {
+
+    List<ArticleComment> findByArticle_Id(Long articleId);
     @Override
     default void customize(QuerydslBindings bindings, QArticleComment root){
         // 선택적 검색 설정 -> 기본값 false 에서 true 로 설정

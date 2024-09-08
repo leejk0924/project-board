@@ -2,6 +2,7 @@ package com.jk.projectboard.repository;
 
 import com.jk.projectboard.config.JpaConfig;
 import com.jk.projectboard.domain.Article;
+import com.jk.projectboard.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +26,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 // 1. 아래 어노테이션이 Embedded database 불러옴
 @DataJpaTest
 class JpaRepositoryTest {
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
     private ArticleCommentRepository articleCommentRepository;
+    private final UserAccountRepository userAccountRepository;
 
     public JpaRepositoryTest(@Autowired ArticleRepository articleRepository,
-                             @Autowired ArticleCommentRepository articleCommentRepository) {
+                             @Autowired ArticleCommentRepository articleCommentRepository,
+                             @Autowired UserAccountRepository userAccountRepository) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
     @DisplayName("select 테스트")
     @Test
     void givenTestData_whenSelecting_thenWorksFine() {
         //Given
+        long previousCount = articleRepository.count();
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("uno", "pw", null, null, null));
+        Article article = Article.of(userAccount, "new article", "new content", "#spring");
         //When
         List<Article> articles = articleRepository.findAll();
 
@@ -50,9 +57,11 @@ class JpaRepositoryTest {
     void givenTestData_whenInserting_thenWorksFine() {
         //Given
         long previousCount = articleRepository.count();
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("uno", "pw", null, null, null));
+        Article article = Article.of(userAccount, "new article", "new content", "#spring");
 
         //When
-        Article savedArticle = articleRepository.save(Article.of("new article", "new content", "#spring"));
+        articleRepository.save(article);
 
         //Then
         assertThat(articleRepository.count())

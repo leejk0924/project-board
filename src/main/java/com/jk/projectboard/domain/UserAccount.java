@@ -6,10 +6,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @ToString
-@EqualsAndHashCode
 @Table(indexes = {
         @Index(columnList = "userId"),
         @Index(columnList = "email", unique = true),
@@ -48,5 +48,16 @@ public class UserAccount extends AuditingFields {
                                  String nickname,
                                  String memo) {
         return new UserAccount(userId, userPassword, email, nickname, memo);
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserAccount userAccount)) return false;
+        return id != null && id.equals(userAccount.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
