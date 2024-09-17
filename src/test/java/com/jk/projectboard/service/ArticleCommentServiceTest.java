@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,12 +51,64 @@ class ArticleCommentServiceTest {
     @Test
     void givenArticleCommentInfo_whenSavingArticleComment_thenSavesArticleComment() {
         // Given
+        ArticleCommentDto dto = createArticleCommentDto("댓글");
+        given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
         given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
-        // When
-//        sut.saveArticleComment(ArticleCommentDto.of(LocalDateTime.now(), "Jk", LocalDateTime.now(), "JK", "comment"));
-        // Then
 
+        // When
+        sut.saveArticleComment(dto);
+        // Then
+        then(articleRepository).should().getReferenceById(dto.articleId());
         then(articleCommentRepository).should().save(any(ArticleComment.class));
+    }
+
+    @DisplayName("댓글 저장을 시도했는데 맞는 게시글이 없으면, 경고 로그를 출력하고 동작하지 않는다.")
+    @Test
+    void givenNonexistentArticle_whenSavingArticleComment_thenLogsSituationAndDoesNothing() {
+        // GIven
+        ArticleCommentDto dto = createArticleCommentDto("댓글");
+        given(articleRepository.getReferenceById(dto.articleId())).willThrow(EntityNotFoundException.class);
+
+        // When
+        sut.saveArticleComment(dto);
+
+        // Then
+        then(articleRepository).should().getReferenceById(dto.articleId());
+        then(articleCommentRepository).shouldHaveNoInteractions();
+    }
+
+    @DisplayName("댓글 정보를 입력하면, 댓글을 수정한다.")
+    @Test
+    void givenArticleCommentInfo_whenUpdatingArticleComment_thenUpdatesArticleComment() {
+        // Given
+        String oldContent = "content";
+        String updatedContent = "댓글";
+        ArticleComment articleComment = createArticleComment(oldContent);
+        ArticleCommentDto dto = createArticleCommentDto(updatedContent);
+        given(articleCommentRepository.getReferenceById(dto.id())).willReturn(articleComment);
+
+        // When
+        sut.updateArticleComment(dto);
+
+        // Then
+        assertThat(articleComment.getContent())
+                .isNotEqualTo(oldContent)
+                .isEqualTo(updatedContent);
+        then(articleCommentRepository).should().getReferenceById(dto.id());
+    }
+
+    @DisplayName("없는 댓글 정보를 수정하려고 할 때, 경고 로그를 출력하고 동작하지 않는다.")
+    @Test
+    void givenNonexistentArticleComment_whenUpdatingComment_thenLogsWarningAndDoesNothing() {
+        // Given
+        ArticleCommentDto dto = createArticleCommentDto("댓글");
+        given(articleCommentRepository.getReferenceById(dto.id())).willThrow(EntityNotFoundException.class);
+
+        // When
+        sut.updateArticleComment(dto);
+
+        // Then
+        then(articleCommentRepository).should().getReferenceById(dto.id());
     }
 
     @DisplayName("댓글 ID 입력 시 댓글 삭제")
