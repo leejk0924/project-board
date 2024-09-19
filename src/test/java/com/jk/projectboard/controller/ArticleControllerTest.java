@@ -1,7 +1,8 @@
 package com.jk.projectboard.controller;
 
 import com.jk.projectboard.config.SecurityConfig;
-import com.jk.projectboard.domain.type.SearchType;
+import com.jk.projectboard.domain.constant.FormStatus;
+import com.jk.projectboard.domain.constant.SearchType;
 import com.jk.projectboard.dto.ArticleWithCommentsDto;
 import com.jk.projectboard.dto.UserAccountDto;
 import com.jk.projectboard.service.ArticleService;
@@ -114,16 +115,21 @@ class ArticleControllerTest {
     @DisplayName("[view][GET] - 게시글 상세 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestArticleView_thenReturnsArticleView() throws Exception {
+        // Given
         Long articleId = 1L;
-        given(articleService.getArticle(articleId)).willReturn(createArticleWithCommentsDto());
+        Long totalCount = 1L;
+        given(articleService.getArticleWithComments(articleId)).willReturn(createArticleWithCommentsDto());
+        given(articleService.getArticleCount()).willReturn(totalCount);
 
-        mvc.perform(get("/articles/1"))
+        mvc.perform(get("/articles/" + articleId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/detail"))
                 .andExpect(model().attributeExists("article"))
-                .andExpect(model().attributeExists("articleComments"));
-        then(articleService).should().getArticle(articleId);
+                .andExpect(model().attributeExists("articleComments"))
+                .andExpect(model().attribute("totalCount", totalCount));
+        then(articleService).should().getArticleWithComments(articleId);
+        then(articleService).should().getArticleCount();
     }
     @Disabled("구현 중")
     @DisplayName("[view][GET] - 게시글 검색 전용 페이지 - 정상 호출")
@@ -180,6 +186,27 @@ class ArticleControllerTest {
                 .andExpect(model().attribute("searchType", SearchType.HASHTAG));
         then(articleService).should().searchArticlesViaHashtag(eq(hashtag), any(Pageable.class));
         then(articleService).should().getHashtags();
+    }
+
+    @DisplayName("[view][GET] 새 게시글 작성 페이지")
+    @Test
+    void givenNothing_whenRequesting_thenReturnNewArticlePage() throws Exception {
+        // Given
+
+        // When & Then
+        mvc.perform(get("/articles/form"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/form"))
+                .andExpect(model().attribute("formStatus", FormStatus.CREATE));
+    }
+
+    @DisplayName("[view][GET] 게시글 수정 페이지")
+    @Test
+    void givenNothing_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
+        // Given
+        Long articleId = 1L;
+
     }
 
     private ArticleWithCommentsDto createArticleWithCommentsDto() {
