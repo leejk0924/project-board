@@ -60,9 +60,9 @@ public class Article extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Article article)) return false;
+        if (!(o instanceof Article that)) return false;
         // 영속화 되지 않았다면 다른 값으로 취급함
-        return id != null && id.equals(article.id);
+        return id != null && id.equals(that.id);
     }
 
     @Override
