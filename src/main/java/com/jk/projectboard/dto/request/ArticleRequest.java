@@ -8,7 +8,7 @@ public record ArticleRequest(
         String content,
         String hashtag
 ) {
-    public ArticleRequest of(String title, String content, String hashtag) {
+    public static ArticleRequest of(String title, String content, String hashtag) {
         return new ArticleRequest(title, content, hashtag);
     }
 
