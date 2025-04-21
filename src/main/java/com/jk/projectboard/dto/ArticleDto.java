@@ -5,6 +5,8 @@ import com.jk.projectboard.domain.UserAccount;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * DTO for {@link com.jk.projectboard.domain.Article}
@@ -14,7 +16,7 @@ public record ArticleDto(
         UserAccountDto userAccountDto,
         String title,
         String content,
-        String hashtag,
+        Set<HashtagDto> hashtagDtos,
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime modifiedAt,
@@ -22,18 +24,18 @@ public record ArticleDto(
 ) {
     public static ArticleDto of(Long id, UserAccountDto userAccountDto,
                                 String title, String content,
-                                String hashtag, LocalDateTime createdAt,
+                                Set<HashtagDto> hashtagDtos, LocalDateTime createdAt,
                                 String createdBy, LocalDateTime modifiedAt,
                                 String modifiedBy) {
-        return new ArticleDto(id, userAccountDto, title, content, hashtag,
+        return new ArticleDto(id, userAccountDto, title, content, hashtagDtos,
                 createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
     public static ArticleDto of(UserAccountDto userAccountDto,
                                 String title, String content,
-                                String hashtag) {
+                                Set<HashtagDto> hashtagDtos) {
         return new ArticleDto(null, userAccountDto, title,
-                content, hashtag, null, null,
+                content, hashtagDtos, null, null,
                 null, null);
     }
 
@@ -43,7 +45,10 @@ public record ArticleDto(
                 UserAccountDto.from(entity.getUserAccount()),
                 entity.getTitle(),
                 entity.getContent(),
-                entity.getHashtag(),
+                entity.getHashtags().stream()
+                                .map(HashtagDto::from)
+                                        .collect(Collectors.toUnmodifiableSet())
+                ,
                 entity.getCreatedAt(),
                 entity.getCreatedBy(),
                 entity.getModifiedAt(),
@@ -56,7 +61,6 @@ public record ArticleDto(
                 userAccount
                 , title
                 , content
-                , hashtag
         );
     }
 }
