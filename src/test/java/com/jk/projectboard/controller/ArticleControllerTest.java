@@ -5,6 +5,7 @@ import com.jk.projectboard.domain.constant.FormStatus;
 import com.jk.projectboard.domain.constant.SearchType;
 import com.jk.projectboard.dto.ArticleDto;
 import com.jk.projectboard.dto.ArticleWithCommentsDto;
+import com.jk.projectboard.dto.HashtagDto;
 import com.jk.projectboard.dto.UserAccountDto;
 import com.jk.projectboard.dto.request.ArticleRequest;
 import com.jk.projectboard.dto.response.ArticleResponse;
@@ -233,7 +234,7 @@ class ArticleControllerTest {
     @Test
     void givenNewArticleInfo_whenRequesting_thenSavesNewArticle() throws Exception {
         // Given
-        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content");
         willDoNothing().given(articleService).saveArticle(any(ArticleDto.class));
 
         // When & Then
@@ -288,7 +289,7 @@ class ArticleControllerTest {
     void givenUpdateArticleInfo_whenRequesting_thenUpdatesNewArticle() throws Exception {
         // Given
         long articleId = 1L;
-        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content");
         willDoNothing().given(articleService).updateArticle(eq(articleId), any(ArticleDto.class));
 
         // When & Then
@@ -328,7 +329,7 @@ class ArticleControllerTest {
                 createUserAccountDto(),
                 "title",
                 "content",
-                "#java"
+                Set.of(HashtagDto.of("java"))
         );
     }
 
@@ -339,7 +340,7 @@ class ArticleControllerTest {
                 Set.of(),
                 "title",
                 "content",
-                "#java",
+                Set.of(HashtagDto.of("java")),
                 LocalDateTime.now(),
                 "uno",
                 LocalDateTime.now(),

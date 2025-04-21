@@ -25,7 +25,6 @@ public interface ArticleRepository extends
     Page<Article> findByContentContaining(String content, Pageable pageable);
     Page<Article> findByUserAccount_UserIdContaining(String userId, Pageable pageable);
     Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
-    Page<Article> findByHashtag(String hashtag, Pageable pageable);
 
     void deleteByIdAndUserAccount_UserId(Long articleId, String userId);
     @Override
@@ -33,12 +32,12 @@ public interface ArticleRepository extends
         // 선택적 검색 설정 -> 기본값 false 에서 true 로 설정
         bindings.excludeUnlistedProperties(true);
         // title, content, hashtag, createdAt, createdBy 를 검색 할 수 있도록 추가
-        bindings.including(root.title, root.content, root.hashtag, root.createdAt, root.createdBy);
+        bindings.including(root.title, root.content, root.hashtags, root.createdAt, root.createdBy);
 
 //        bindings.bind(root.title).first((StringExpression::likeIgnoreCase));        // like ''
         bindings.bind(root.title).first((StringExpression::containsIgnoreCase));    // like '%{v}%'  -> contain 기능이 편리
-        bindings.bind(root.hashtag).first((StringExpression::containsIgnoreCase));
         bindings.bind(root.content).first((StringExpression::containsIgnoreCase));
+        bindings.bind(root.hashtags.any().hashtagName).first((StringExpression::containsIgnoreCase));
         bindings.bind(root.createdAt).first((DateTimeExpression::eq));
         bindings.bind(root.createdBy).first((StringExpression::containsIgnoreCase));
 

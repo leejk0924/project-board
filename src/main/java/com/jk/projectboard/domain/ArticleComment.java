@@ -4,7 +4,9 @@ import lombok.*;
 
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -27,6 +29,13 @@ public class ArticleComment extends AuditingFields {
     @ManyToOne(optional = false)
     @JoinColumn(name = "userId")
     private UserAccount userAccount; // 유저 정보 (ID)
+    @Setter
+    @Column(updatable = false)
+    private Long parentCommentId; // 부모 댓글 ID
+    @ToString.Exclude
+    @OrderBy("createdAt ASC")
+    @OneToMany(mappedBy = "parentCommentId", cascade = CascadeType.ALL)
+    private Set<ArticleComment> childComments = new LinkedHashSet<>();
     @Setter
     @Column(nullable = false, length = 500)
     private String content;
