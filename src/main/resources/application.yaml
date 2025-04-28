@@ -15,7 +15,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/board
     username: jk
-    password: jk
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     # 테스트용 데이터베이스 생성
