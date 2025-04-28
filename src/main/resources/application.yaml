@@ -13,10 +13,9 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/board
+    url: jdbc:postgresql://localhost:5432/board
     username: jk
     password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     # 테스트용 데이터베이스 생성
     defer-datasource-initialization: true

@@ -37,6 +37,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'org.postgresql:postgresql'
 
     // queryDSL 설정  -> spring.dependency-management 가 버전 관리하는 대상에 포함
     implementation "com.querydsl:querydsl-jpa"
