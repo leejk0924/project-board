@@ -2,12 +2,12 @@ package com.jk.projectboard.controller;
 
 import com.jk.projectboard.domain.constant.FormStatus;
 import com.jk.projectboard.domain.constant.SearchType;
-import com.jk.projectboard.dto.UserAccountDto;
 import com.jk.projectboard.dto.request.ArticleRequest;
 import com.jk.projectboard.dto.response.ArticleResponse;
 import com.jk.projectboard.dto.response.ArticleWithCommentsResponse;
 import com.jk.projectboard.dto.security.BoardPrincipal;
 import com.jk.projectboard.service.ArticleService;
+import com.jk.projectboard.service.HashtagService;
 import com.jk.projectboard.service.PaginationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +25,7 @@ import java.util.List;
 @RequestMapping("/articles")
 @Controller
 public class ArticleController {
+    private final HashtagService hashtagService;
     private final ArticleService articleService;
     private final PaginationService paginationService;
 
@@ -41,6 +42,7 @@ public class ArticleController {
         map.addAttribute("articles", articles);
         map.addAttribute("paginationBarNumbers", barNumbers);
         map.addAttribute("searchTypes", SearchType.values());
+        map.addAttribute("searchTypeHashtag", SearchType.HASHTAG);
         return "articles/index";
     }
 
@@ -50,6 +52,7 @@ public class ArticleController {
         map.addAttribute("article", article);
         map.addAttribute("articleComments", article.articleCommentsResponses());
         map.addAttribute("totalCount", articleService.getArticleCount());
+        map.addAttribute("searchTypeHashtag", SearchType.HASHTAG);
         return "articles/detail";
     }
 
