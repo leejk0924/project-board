@@ -40,16 +40,21 @@ public class ArticleComment extends AuditingFields {
     @Column(nullable = false, length = 500)
     private String content;
 
-    private ArticleComment(Article article, UserAccount userAccount, String content) {
+    private ArticleComment(Article article, UserAccount userAccount, Long parentCommentId, String content) {
         this.userAccount = userAccount;
         this.article = article;
+        this.parentCommentId = parentCommentId;
         this.content = content;
     }
 
-    public static ArticleComment of(Article article, UserAccount userAccount, String content) {
-        return new ArticleComment(article, userAccount, content);
+    public static ArticleComment of(Article article, UserAccount userAccount,String content) {
+        return new ArticleComment(article, userAccount, null,content);
     }
 
+    public void addChildComment(ArticleComment child) {
+        child.setParentCommentId(this.getId());
+        this.getChildComments().add(child);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
